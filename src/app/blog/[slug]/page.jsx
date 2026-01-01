@@ -1,31 +1,42 @@
-import { posts } from '../../data/posts';
+// src/app/blog/[slug]/page.jsx
+import { posts } from "../../data/posts";// Pastikan import path-nya benar (naik 3 level)
 
-// Tambahkan 'async' di depan function
 export default async function BlogDetail({ params }) {
-  
-  // WAJIB pakai 'await' untuk mengambil slug di Next.js versi baru
-  const { slug } = await params; 
-  
+  // 1. Ambil slug dari URL (di Next.js 15+, params harus di-await)
+  const { slug } = await params;
+
+  // 2. Cari data yang sesuai dengan slug
   const post = posts.find((p) => p.slug === slug);
 
+  // 3. Handle jika data tidak ditemukan
   if (!post) {
-    return <div className="text-center text-red-500 mt-10">Artikel tidak ditemukan!</div>;
+    return (
+      <div className="text-center text-red-500 mt-10">
+        Artikel tidak ditemukan!
+      </div>
+    );
   }
 
   return (
-    <article className="max-w-2xl mx-auto mt-8">
-      <h1 className="text-4xl font-bold mb-4">{post.title}</h1>
+    <article className="max-w-2xl mx-auto mt-8 p-4">
+      <h1 className="text-4xl font-bold mb-2">{post.title}</h1>
       
-      {/* Tugas Mandiri: Author & Date */}
-      <div className="text-gray-500 mb-4 italic text-sm">
-        Ditulis oleh: {post.author} | {post.date}
+      {/* --- INI BAGIAN BARU (TUGAS 2) --- */}
+      <div className="text-sm text-gray-500 mb-6 border-b pb-4">
+        <span className="font-semibold text-gray-700">Penulis:</span> {post.author} | 
+        <span className="font-semibold text-gray-700 ml-1">Tanggal:</span> {post.date}
       </div>
+      {/* --------------------------------- */}
 
-      <div className="prose lg:prose-xl">
+      <div className="prose lg:prose-xl text-gray-800 leading-relaxed">
         <p>{post.content}</p>
       </div>
-      <br />
-      <a href="/blog" className="text-blue-600 hover:underline">← Kembali ke Daftar</a>
+
+      <div className="mt-10">
+        <a href="/blog" className="text-blue-600 hover:underline">
+          &larr; Kembali ke Daftar
+        </a>
+      </div>
     </article>
   );
 }
